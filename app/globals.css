@@ -1,0 +1,402 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-notebook: 1140px;
+  --breakpoint-desktop: 1440px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-mobile: 320px;
+}
+
+@font-face {
+  font-family: "Ragdit";
+  src: url("/assets/fonts/ragdit-regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-DemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-ExtraBold.otf") format("opentype");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-Black.otf") format("opentype");
+  font-weight: 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BDO Grotesk";
+  src: url("/assets/fonts/BDOGrotesk-Light.otf") format("opentype");
+  font-weight: 300;
+  font-display: swap;
+}
+
+:root {
+  --background: #050208;
+}
+
+
+:root {
+  --color-background: var(--background);
+  --font-display: "Ragdit", sans-serif;
+  --font-body: "BDO Grotesk", sans-serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+html {
+  overflow-x: clip;
+  width: 100%;
+  overflow-y: auto;
+}
+
+body {
+  width: 100%;
+  background: var(--background);
+  font-family: "BDO Grotesk", sans-serif;
+}
+
+/* Sections hidden until the VSL reveal time (see VturbReveal). !important beats
+   Tailwind's display utilities (flex/block) on the same element. */
+/* TEMPORARILY DISABLED FOR TESTING - uncomment for production
+.esconder {
+  display: none !important;
+}
+*/
+
+/* While the CTA block is still hidden, keep the hero tall on mobile so the page
+   doesn't collapse. `:has()` matches only while a `.esconder` child exists; once
+   VturbReveal strips the class the rule stops matching and the hero returns to
+   its natural height. */
+@media (max-width: 768px) {
+  section:has(> .esconder) {
+    min-height: 90vh;
+  }
+}
+
+/* Marquee animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes marquee-slow {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes notif-scroll {
+  0% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes notif-scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse 30s linear infinite;
+}
+
+.animate-marquee-slow {
+  animation: marquee-slow 50s linear infinite;
+}
+
+.animate-notif-scroll {
+  animation: notif-scroll 18s linear infinite;
+}
+
+.animate-notif-scroll-reverse {
+  animation: notif-scroll-reverse 18s linear infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: pretty;
+}
+
+@media (min-width: 768px) and (max-width: 1439px) {
+  main>section {
+    padding-left: 2.5% !important;
+    padding-right: 2.5% !important;
+  }
+}
+
+.degrade {
+  background: linear-gradient(90deg, #7654ff 2.37%, #c96af6 49.34%, #ecc5ff 81.44%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-bottom: 0.12em;
+}
+
+.degrade-light {
+  background: linear-gradient(93.5deg, #cccccc 0.37%, #eff0f5 22.72%, #ffffff 48.32%, #dfdce7 71.15%, #eceaf1 97.09%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-bottom: 0.12em;
+}
+
+/* Beyond X1 tag pill — gradient (orange→neutral) border drawn with a masked
+   pseudo-element so the ring sits behind the pill without a wrapper element. */
+.tag-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(277deg, #FF4D11 1.54%, #FFF2EE 53.9%, #FF4D11 89.02%);
+  pointer-events: none;
+}
+
+.tag-ring::after {
+  content: "";
+  position: absolute;
+  inset: 1.2px;
+  border-radius: inherit;
+  background: linear-gradient(203.6deg, #080a0e 1%, #0f0c0c 126%);
+  box-shadow: inset 2.685px 5.37px 21.479px 0 rgba(248, 248, 248, 0.02);
+  pointer-events: none;
+}
+
+/* Gradient border card utility */
+.card-border {
+  padding: 1px;
+  border-radius: 20px;
+  background: linear-gradient(180deg,
+      rgba(64, 43, 117, 0.66) 0%,
+      rgba(108, 73, 196, 0.37) 34%,
+      rgb(228, 150, 255) 63%,
+      rgb(104, 30, 224) 100%);
+}
+
+.card-inner {
+  border-radius: 19px;
+  height: 100%;
+  width: 100%;
+  background: radial-gradient(ellipse at 10% 10%,
+      rgba(30, 19, 54, 1) 0%,
+      rgba(21, 12, 36, 1) 50%,
+      rgba(12, 5, 18, 1) 100%);
+}
+
+/* Tag Resultados Styles */
+.tag-resultados {
+  display: flex;
+  height: 47px;
+  padding: 12px 22px !important;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 auto 24px;
+  border-radius: 42.959px;
+  border: 1px solid #463C54;
+  background: rgba(162, 125, 227, 0.06);
+  background-blend-mode: luminosity;
+  box-shadow: 2.685px 5.37px 21.479px 0 rgba(248, 248, 248, 0.06) inset;
+  backdrop-filter: blur(67.123px);
+  -webkit-backdrop-filter: blur(67.123px);
+}
+
+.tag-resultados .text {
+  color: #A1A1A1;
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.05rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.75em;
+  letter-spacing: 0.18px;
+}
+
+/* ===== Responsive base =====
+   Must live in @layer base so Tailwind utilities (max-w-*, w-*) can
+   override it. Unlayered CSS beats layered utilities in the cascade,
+   so an unlayered `img { max-width: 100% }` silently wins over every
+   max-w-[...] class. */
+@layer base {
+  html,
+  body {
+    max-width: 100%;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  section.section-edge-to-edge {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+.carousel-fade-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
+@media (min-width: 768px) {
+  .carousel-fade-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+}
+
+/* Footer padding */
+.footer-main {
+  padding-top: 40px;
+  padding-bottom: 44px;
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  .footer-main {
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 100px;
+  }
+}
+
+/* FAQ question button padding */
+.faq-question-btn {
+  padding: 16px clamp(18px, 4vw, 30px);
+  min-height: 68px;
+}
+
+@media (min-width: 768px) {
+  .faq-question-btn {
+    padding: 12px clamp(18px, 4vw, 30px);
+    min-height: 68px;
+  }
+}
+
+/* Video carousel mobile snap */
+@media (max-width: 767px) {
+  .video-snap-scroll {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .video-snap-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .video-snap-track {
+    padding-inline: max(16px, calc((100vw - 260px) / 2));
+  }
+
+  .video-snap-card {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+}
