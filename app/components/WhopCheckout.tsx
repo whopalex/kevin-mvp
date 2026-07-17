@@ -10,6 +10,10 @@ interface WhopCheckoutProps {
   className?: string;
   theme?: "dark" | "light";
   locale?: string;
+  /** Show prices in the buyer's local currency based on their IP-detected location. */
+  adaptivePricing?: boolean;
+  /** Save the card for later off-session charges (required for one-click upsells/order bumps). */
+  saveForOffSessionCharges?: boolean;
 }
 
 /**
@@ -21,7 +25,9 @@ export default function WhopCheckout({
   returnUrl,
   className,
   theme = "dark",
-  locale = "es"
+  locale = "es",
+  adaptivePricing = true,
+  saveForOffSessionCharges = true,
 }: WhopCheckoutProps) {
   const mountedRef = useRef(false);
 
@@ -54,6 +60,8 @@ export default function WhopCheckout({
       data-whop-checkout-return-url={returnUrl}
       data-whop-checkout-theme={theme}
       data-whop-checkout-locale={locale}
+      data-whop-checkout-adaptive-pricing={adaptivePricing}
+      data-whop-checkout-setup-future-usage={saveForOffSessionCharges ? "off_session" : undefined}
     />
   );
 }
