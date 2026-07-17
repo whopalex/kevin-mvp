@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 export interface OrderBump {
+  /** Combo plan id to check out with when this bump is the ONLY one selected. Not used directly when combined with others — see CheckoutFlow's plan map. */
   planId: string;
   title: string;
   description: string;
@@ -12,46 +11,24 @@ export interface OrderBump {
   discountPercent: number;
 }
 
-export const ORDER_BUMP_STORAGE_KEY = "kevin_mvp_order_bumps";
-
 interface OrderBumpsProps {
   bumps: OrderBump[];
-  /** Price of the main product shown in the checkout embed below, so the running total is accurate. */
+  selected: Set<string>;
+  onToggle: (planId: string) => void;
+  /** Price of the main product, so the running total is accurate. */
   basePrice: number;
   className?: string;
 }
 
 /**
  * Order bump ("buy together") selector shown on the initial checkout.
- * Selections are persisted to sessionStorage since Whop's checkout redirect
- * navigates away from this page; OrderBumpCharger reads them back on landing.
- *
- * The Whop checkout embed below only supports a single plan — it has no
- * concept of a multi-item cart, so it will always display just the base
- * price no matter what's selected here. The running total below is what
- * tells the buyer what they're actually agreeing to pay.
+ * Selection is controlled by the parent (CheckoutFlow), which remounts the
+ * Whop checkout embed against a combo plan matching the current selection —
+ * so the real embedded checkout reflects the bump, not just this summary.
  */
-export default function OrderBumps({ bumps, basePrice, className }: OrderBumpsProps) {
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    sessionStorage.setItem(ORDER_BUMP_STORAGE_KEY, JSON.stringify(Array.from(selected)));
-  }, [selected]);
-
+export default function OrderBumps({ bumps, selected, onToggle, basePrice, className }: OrderBumpsProps) {
   const selectedBumps = bumps.filter((bump) => selected.has(bump.planId));
   const total = basePrice + selectedBumps.reduce((sum, bump) => sum + bump.price, 0);
-
-  const toggle = (planId: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(planId)) {
-        next.delete(planId);
-      } else {
-        next.add(planId);
-      }
-      return next;
-    });
-  };
 
   return (
     <div className={`w-full flex flex-col gap-3 ${className || ""}`}>
@@ -91,7 +68,7 @@ export default function OrderBumps({ bumps, basePrice, className }: OrderBumpsPr
               <input
                 type="checkbox"
                 checked={isChecked}
-                onChange={() => toggle(bump.planId)}
+                onChange={() => onToggle(bump.planId)}
                 className="w-5 h-5 mt-1 shrink-0 accent-green-500"
               />
             </div>
@@ -134,18 +111,9 @@ export default function OrderBumps({ bumps, basePrice, className }: OrderBumpsPr
           className="text-[#a0a0a0] text-xs"
           style={{ fontFamily: "BDO Grotesk, sans-serif" }}
         >
-          Incluye {selectedBumps.map((bump) => `${bump.title} ($${bump.price.toFixed(2)}${bump.billingLabel}, se renueva automáticamente)`).join(" y ")}.
+          Incluye {selectedBumps.map((bump) => `${bump.title} ($${bump.price.toFixed(2)}${bump.billingLabel}, se renueva automáticamente)`).join(" y ")}. El pago de abajo ya refleja este total.
         </p>
       )}
-
-      <p
-        className="text-[#666] text-xs"
-        style={{ fontFamily: "BDO Grotesk, sans-serif" }}
-      >
-        El formulario de pago de abajo mostrará solo el precio del Sistema MVP ($
-        {basePrice.toFixed(2)}) — los extras que selecciones arriba se agregan
-        automáticamente a la misma tarjeta justo después de tu compra.
-      </p>
     </div>
   );
 }

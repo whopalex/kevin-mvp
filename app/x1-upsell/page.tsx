@@ -10,12 +10,10 @@ import PriceSection from "./components/PriceSection";
 import GuaranteeSection from "./components/GuaranteeSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "../components/Footer";
-import OrderBumpCharger from "../components/OrderBumpCharger";
 
 export default function UpsellPage() {
   return (
     <main className="bg-[#020101] min-h-screen w-full [overflow-x:clip]">
-      <OrderBumpCharger />
       <ProgressTabs />
       <AlertBanner />
       <HeroSection />

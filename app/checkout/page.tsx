@@ -1,14 +1,18 @@
-import WhopCheckout from "@/app/components/WhopCheckout";
-import OrderBumps, { type OrderBump } from "@/app/components/OrderBumps";
+import CheckoutFlow from "@/app/components/CheckoutFlow";
+import type { OrderBump } from "@/app/components/OrderBumps";
 
-// Main product plan ($69)
+// Main product plan ($69, one-time)
 const MAIN_PLAN_ID = "plan_mwjvL0BtULG5P";
 const MAIN_PRICE = 69;
+
+// Identity keys for the two bumps (not charged directly — see COMBO_PLAN_MAP)
+const SOPORTE_ID = "plan_WvEVPJaZfVRtb";
+const OFERTAS_ID = "plan_Dv1alCXkMLPUs";
 
 // Order bumps offered alongside the main checkout
 const ORDER_BUMPS: OrderBump[] = [
   {
-    planId: "plan_WvEVPJaZfVRtb",
+    planId: SOPORTE_ID,
     title: "Soporte prioritario",
     description:
       "9 de cada 10 personas agregan este producto a su compra. Este soporte es un canal exclusivo via Whatsapp, que es un soporte prioritario directo con nuestro equipo. Este canal permite que tus dudas sean despejadas en un menor tiempo posible y que puedas seguir viendo el programa y aplicando la metodología sin tener ningún tipo de obstáculo en el camino.",
@@ -18,7 +22,7 @@ const ORDER_BUMPS: OrderBump[] = [
     discountPercent: 78,
   },
   {
-    planId: "plan_Dv1alCXkMLPUs",
+    planId: OFERTAS_ID,
     title: "AGREGA ESTO: Ofertas Ganadoras",
     description:
       "No pierdas tiempo buscando productos para empezar a vender. En esta plataforma te vamos a entregar los productos mas escalados de Brasil y Latam para que puedas modelarlos en simples clics y arrancar a vender desde el día uno. Sin ningún tipo de complicación ni perder tiempo pensando que productos crear.",
@@ -28,6 +32,15 @@ const ORDER_BUMPS: OrderBump[] = [
     discountPercent: 78,
   },
 ];
+
+// Combo plans: base $69 + selected bump(s) billed together as ONE Whop plan
+// (initial_price = 69, renewal_price = sum of selected bumps' monthly price).
+// This is what lets the real embedded checkout show the combined total.
+const COMBO_PLAN_MAP: Record<string, string> = {
+  [SOPORTE_ID]: "plan_qD7E61Rl8m0o8", // +Soporte prioritario ($77 today, $8/mo after)
+  [OFERTAS_ID]: "plan_V4EjXcZUlzshP", // +Ofertas Ganadoras ($74 today, $5/mo after)
+  [[SOPORTE_ID, OFERTAS_ID].sort().join(",")]: "plan_vGcFHBT45zQe4", // both ($82 today, $13/mo after)
+};
 
 export default function CheckoutPage() {
   return (
@@ -53,14 +66,12 @@ export default function CheckoutPage() {
         </p>
       </div>
 
-      {/* Order bumps */}
-      <OrderBumps bumps={ORDER_BUMPS} basePrice={MAIN_PRICE} className="max-w-[600px] mb-8" />
-
-      {/* Whop Embedded Checkout */}
-      <WhopCheckout
-        planId={MAIN_PLAN_ID}
+      <CheckoutFlow
+        basePlanId={MAIN_PLAN_ID}
+        basePrice={MAIN_PRICE}
+        bumps={ORDER_BUMPS}
+        comboPlanMap={COMBO_PLAN_MAP}
         returnUrl="/x1-upsell"
-        className="w-full max-w-[600px]"
       />
 
       {/* Trust badges */}
