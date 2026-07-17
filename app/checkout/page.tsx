@@ -3,6 +3,7 @@ import OrderBumps, { type OrderBump } from "@/app/components/OrderBumps";
 
 // Main product plan ($69)
 const MAIN_PLAN_ID = "plan_mwjvL0BtULG5P";
+const MAIN_PRICE = 69;
 
 // Order bumps offered alongside the main checkout
 const ORDER_BUMPS: OrderBump[] = [
@@ -48,12 +49,12 @@ export default function CheckoutPage() {
           className="text-[#C3BFD6] text-lg"
           style={{ fontFamily: "BDO Grotesk, sans-serif" }}
         >
-          Accede al Sistema MVP por solo <span className="text-white font-bold">$69 USD</span>
+          Accede al Sistema MVP por solo <span className="text-white font-bold">${MAIN_PRICE} USD</span>
         </p>
       </div>
 
       {/* Order bumps */}
-      <OrderBumps bumps={ORDER_BUMPS} className="max-w-[600px] mb-8" />
+      <OrderBumps bumps={ORDER_BUMPS} basePrice={MAIN_PRICE} className="max-w-[600px] mb-8" />
 
       {/* Whop Embedded Checkout */}
       <WhopCheckout

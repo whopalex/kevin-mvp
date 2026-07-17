@@ -16,6 +16,8 @@ export const ORDER_BUMP_STORAGE_KEY = "kevin_mvp_order_bumps";
 
 interface OrderBumpsProps {
   bumps: OrderBump[];
+  /** Price of the main product shown in the checkout embed below, so the running total is accurate. */
+  basePrice: number;
   className?: string;
 }
 
@@ -23,13 +25,21 @@ interface OrderBumpsProps {
  * Order bump ("buy together") selector shown on the initial checkout.
  * Selections are persisted to sessionStorage since Whop's checkout redirect
  * navigates away from this page; OrderBumpCharger reads them back on landing.
+ *
+ * The Whop checkout embed below only supports a single plan — it has no
+ * concept of a multi-item cart, so it will always display just the base
+ * price no matter what's selected here. The running total below is what
+ * tells the buyer what they're actually agreeing to pay.
  */
-export default function OrderBumps({ bumps, className }: OrderBumpsProps) {
+export default function OrderBumps({ bumps, basePrice, className }: OrderBumpsProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     sessionStorage.setItem(ORDER_BUMP_STORAGE_KEY, JSON.stringify(Array.from(selected)));
   }, [selected]);
+
+  const selectedBumps = bumps.filter((bump) => selected.has(bump.planId));
+  const total = basePrice + selectedBumps.reduce((sum, bump) => sum + bump.price, 0);
 
   const toggle = (planId: string) => {
     setSelected((prev) => {
@@ -103,6 +113,39 @@ export default function OrderBumps({ bumps, className }: OrderBumpsProps) {
           </label>
         );
       })}
+
+      <div className="flex items-center justify-between rounded-xl border border-[#333038] bg-[#0d0d12] px-4 py-3">
+        <span
+          className="text-[#a0a0a0] text-sm"
+          style={{ fontFamily: "BDO Grotesk, sans-serif" }}
+        >
+          Total a pagar hoy
+        </span>
+        <span
+          className="text-white"
+          style={{ fontFamily: "BDO Grotesk, sans-serif", fontWeight: 700, fontSize: "20px" }}
+        >
+          ${total.toFixed(2)} USD
+        </span>
+      </div>
+
+      {selectedBumps.length > 0 && (
+        <p
+          className="text-[#a0a0a0] text-xs"
+          style={{ fontFamily: "BDO Grotesk, sans-serif" }}
+        >
+          Incluye {selectedBumps.map((bump) => `${bump.title} ($${bump.price.toFixed(2)}${bump.billingLabel}, se renueva automáticamente)`).join(" y ")}.
+        </p>
+      )}
+
+      <p
+        className="text-[#666] text-xs"
+        style={{ fontFamily: "BDO Grotesk, sans-serif" }}
+      >
+        El formulario de pago de abajo mostrará solo el precio del Sistema MVP ($
+        {basePrice.toFixed(2)}) — los extras que selecciones arriba se agregan
+        automáticamente a la misma tarjeta justo después de tu compra.
+      </p>
     </div>
   );
 }
